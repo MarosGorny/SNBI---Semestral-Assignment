@@ -7,22 +7,27 @@ classdef WaveformAnalysis < AudioAnalysis
         end
 
         % Metóda na segmentovú analýzu pre stereo signál
-        function stats = analyzeBySegments(obj, segmentLength)
+        function segmentStats = analyzeBySegments(obj, segmentLength)
             numSegments = floor(length(obj.Data) / segmentLength);
-            stats = struct('maxValues', [], 'minValues', [], 'meanValues', [], 'variances', []);
+            segmentStats = cell(numSegments, 1); % Zmena na použitie bunkového poľa
             
             for i = 1:numSegments
                 segmentStart = (i-1)*segmentLength + 1;
                 segmentEnd = i*segmentLength;
-                segmentData = obj.Data(segmentStart:segmentEnd, :); % Data for both channels
+                segmentData = obj.Data(segmentStart:segmentEnd, :);
                 
-                % Pre stereo dáta, môžeš vypočítať štatistiky takto:
-                stats.maxValues(end+1) = max(max(segmentData));
-                stats.minValues(end+1) = min(min(segmentData));
-                stats.meanValues(end+1) = mean(mean(segmentData));
-                stats.variances(end+1) = var(segmentData(:)); % Variance of flattened segment
+                maxVal = max(max(segmentData));
+                minVal = min(min(segmentData));
+                meanVal = mean(mean(segmentData));
+                varVal = var(segmentData(:));
+                
+                segmentStats{i} = struct('maxValue', maxVal, ...
+                                         'minValue', minVal, ...
+                                         'meanValue', meanVal, ...
+                                         'variance', varVal);
             end
         end
+
 
         % Dodatočná metóda na výpočet štatistických údajov
         function stats = computeStatistics(obj)
