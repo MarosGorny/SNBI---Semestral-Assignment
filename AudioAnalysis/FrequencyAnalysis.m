@@ -5,20 +5,18 @@ classdef FrequencyAnalysis < AudioAnalysis
 
     methods
         function obj = FrequencyAnalysis(data, Fs)
-            obj@AudioAnalysis(data); % Call the superclass constructor
+            obj@AudioAnalysis(data);
             obj.SampleRate = Fs;
         end
 
         function result = analyze(obj)
-            % Perform the fast Fourier transform (FFT)
             N = length(obj.Data);
+            windowedData = obj.applyHannWindow(N);
 
-            % Apply a Hann window to the data
-            windowedData = obj.applyHannWindow();
-
-            % Subtract the mean to remove DC component
+            % Subtract the mean to remove Direct Current component (offset of signal)
             windowedData = windowedData - mean(windowedData);
 
+            %Fast Fourier transform (FFT)
             fftData = fft(windowedData);
 
             % Calculate the two-sided spectrum
@@ -31,17 +29,17 @@ classdef FrequencyAnalysis < AudioAnalysis
             % Define the frequency domain f
             f = obj.SampleRate * (0:(N/2)) / N;
 
-            % Create a structure to hold the results
             result = struct('frequency', f, 'magnitude', P1);
         end
     end
     
+    %Hannovo okno je druh okna, ktoré zmenšuje amplitúdy na krajoch vzorky a je užitočné na minimalizáciu úniku spektra pri FFT
     methods (Access = private)
-        function windowedData = applyHannWindow(obj)
-            N = length(obj.Data);
-            n = 0:N-1; % n is a vector from 0 to N-1
-            hannWindow = 0.5 * (1 - cos(2 * pi * n / (N - 1))); % Manual Hann window calculation
-            windowedData = obj.Data .* hannWindow'; % Apply the Hann window
+        function windowedData = applyHannWindow(obj, length)
+            N = length;
+            n = 0:N-1; 
+            hannWindow = 0.5 * (1 - cos(2 * pi * n / (N - 1))); 
+            windowedData = obj.Data .* hannWindow';
         end
     end
 end

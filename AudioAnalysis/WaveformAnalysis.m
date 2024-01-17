@@ -1,15 +1,12 @@
 classdef WaveformAnalysis < AudioAnalysis
     methods
-        % Implementácia abstraktnej metódy 'analyze'
         function result = analyze(obj)
-            % Táto implementácia môže vrátiť dáta vhodné pre vykreslenie vlnovej formy
-            result = obj.Data; % Jednoduché vrátenie audio dát
+            result = obj.Data; 
         end
 
-        % Metóda na segmentovú analýzu pre stereo signál
         function segmentStats = analyzeBySegments(obj, segmentLength)
             numSegments = floor(length(obj.Data) / segmentLength);
-            segmentStats = cell(numSegments, 1); % Zmena na použitie bunkového poľa
+            segmentStats = cell(numSegments, 1); 
             
             for i = 1:numSegments
                 segmentStart = (i-1)*segmentLength + 1;
@@ -29,7 +26,6 @@ classdef WaveformAnalysis < AudioAnalysis
         end
 
 
-        % Dodatočná metóda na výpočet štatistických údajov
         function stats = computeStatistics(obj)
             maxValLeft = max(obj.Data(:,1));
             minValLeft = min(obj.Data(:,1));
@@ -41,7 +37,6 @@ classdef WaveformAnalysis < AudioAnalysis
             meanValRight = mean(obj.Data(:,2));
             varValRight = var(obj.Data(:,2));
         
-            % Vytvorenie štruktúry na uchovanie štatistických údajov pre oba kanály
             stats = struct('maxValueLeft', maxValLeft, ...
                            'minValueLeft', minValLeft, ...
                            'meanValueLeft', meanValLeft, ...

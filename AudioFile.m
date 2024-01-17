@@ -8,7 +8,6 @@ classdef AudioFile
     
     methods
         function obj = AudioFile(data, sampleRate, filePath)
-            % Konštruktor
             obj.Data = data;
             obj.SampleRate = sampleRate;
             obj.FilePath = filePath;
@@ -18,7 +17,6 @@ classdef AudioFile
     
     methods(Static)
         function obj = loadAudioFile(filePath)
-            % Statická metóda na načítanie audio súboru
             if isfile(filePath)
                 [data, sampleRate] = audioread(filePath);
                 obj = AudioFile(data, sampleRate, filePath);
